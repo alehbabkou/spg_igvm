@@ -1,0 +1,9 @@
+---
+# Set java_packages if you would like to use a different version than the
+# default (OpenJDK 1.7).
+# java_packages: []
+
+java_home: ""
+oracle_java_state: latest
+oracle_java_cache_valid_time: 3600
+oracle_java_set_as_default: yes

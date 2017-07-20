@@ -1,0 +1,57 @@
+---
+
+- name: OS update
+  hosts: all
+  gather_facts: yes
+  become: yes
+  roles:
+    - { role: os_update, tags: ["os_update"] }
+
+- name: Installing and configuring JAVA
+  hosts: all
+  gather_facts: yes
+  become: yes
+  roles:
+    - { role: java, tags: ["java"] }
+
+#- name: Installing and configuring Docker
+#  hosts: all
+#  gather_facts: yes
+#  become: yes
+#  roles:
+#    - { role: docker, tags: ["docker"] }
+
+#- name: Installing and configuring Node.js
+#  hosts: build
+#  gather_facts: yes
+#  become: yes
+#  roles:
+#    - { role: node, tags: ["node"] }
+
+#- name: Installing and configuring Yarn
+#  hosts: build
+#  gather_facts: yes
+#  become: yes
+#  roles:
+#    - { role: yarn, tags: ["yarn"] }
+
+#- name: Installing and configuring tomcat
+#  hosts: build
+#  gather_facts: yes
+#  become: yes
+#  roles:
+#    - { role: tomcat, tags: ["tomcat"] }
+
+- name: Installing and configuring wildfly
+  hosts: build
+  gather_facts: yes
+  become: yes
+  roles:
+    - { role: wildfly2, tags: ["wildfly"] }
+
+- name: Installing and configuring kie
+  hosts: build
+  gather_facts: yes
+  become: yes
+  roles:
+    - { role: kie, tags: ["kie"] }

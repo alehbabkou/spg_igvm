@@ -1,0 +1,57 @@
+---
+# Task file to install Oracle Java Development Kit in a system with a Debian based Linux distribution.
+
+- name: Add java ppa repo
+  apt_repository:
+    repo: 'ppa:webupd8team/java'
+    state: present
+  become: yes
+  when: ansible_distribution == 'Ubuntu'
+
+- block:
+  - name: Ensure the webupd8 launchpad apt repository key is present
+    apt_key:
+      id: 0xC2518248EEA14886
+      keyserver: keyserver.ubuntu.com
+      state: present
+    become: yes
+
+  - name: Ensure the webupd8 launchpad apt repository is present
+    apt_repository:
+      repo: "{{ item }} http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main"
+      update_cache: yes
+      state: "{{ oracle_java_state }}"
+    with_items:
+      - deb
+      - deb-src
+    become: yes
+
+  when: ansible_distribution == 'Debian'
+
+- name: Set license as accepted
+  debconf:
+    name: "{{ item }}"
+    question: 'shared/accepted-oracle-license-v1-1'
+    value: 'true'
+    vtype: 'select'
+  with_items: "{{ java_packages }}"
+  become: yes
+
+- name: Ensure Java is installed
+  apt:
+    name: "{{ item }}"
+    state: "{{ oracle_java_state }}"
+    cache_valid_time: "{{ oracle_java_cache_valid_time }}"
+    update_cache: yes
+  register: oracle_java_task_apt_install
+  with_items: "{{ java_packages }}"
+  become: yes
+
+- name: Set Java version as default
+  apt:
+    name: "{{ item }}"
+    state: "{{ oracle_java_state }}"
+  with_items: "{{ java_packages }}"
+  register: oracle_java_task_set_default
+  when: oracle_java_set_as_default
+  become: yes

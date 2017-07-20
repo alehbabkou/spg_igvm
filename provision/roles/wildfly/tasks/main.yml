@@ -1,0 +1,117 @@
+---
+#- name: Download Wildfly from jboss.org
+#  get_url:
+#    url: http://download.jboss.org/wildfly/10.1.0.Final/wildfly-10.1.0.Final.tar.gz
+#    dest: /opt/wildfly-10.1.0.Final.tar.gz
+
+#- name: Extract archive
+#  unarchive:
+#    dest: /usr/share
+#    src: /opt/wildfly-10.1.0.Final.tar.gz
+#    creates: /usr/share/wildfly-10.0.0.Final
+#    copy: no
+
+- include: clean.yml
+  when: wildfly_reinstall
+
+- name: install packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ wildfly_packages }}"
+
+- name: create system group
+  group:
+    name: "{{ wildfly_user }}"
+    system: yes
+    state: present
+
+- name: create system user
+  user:
+    name: "{{ wildfly_user }}"
+    group: "{{ wildfly_user }}"
+    comment: "WildFly System User"
+    home: "{{ wildfly_home }}"
+    createhome: no
+    shell: "/usr/sbin/nologin"
+    system: yes
+    state: present
+
+- name: create install directory
+  file:
+    path: "{{ wildfly_prefix }}"
+    state: directory
+
+- name: download archive
+  get_url:
+    url: "{{ wildfly_url }}"
+    dest: "{{ wildfly_prefix }}/{{ wildfly_archive }}"
+    checksum: "{{ wildfly_checksum }}"
+
+- name: unzip archive
+  unarchive:
+    src: "{{ wildfly_prefix }}/{{ wildfly_archive }}"
+    remote_src: yes
+    dest: "{{ wildfly_prefix }}"
+    owner: "{{ wildfly_user }}"
+    group: "{{ wildfly_user }}"
+    creates: "{{ wildfly_prefix }}/{{ wildfly_basename }}"
+
+#- name: create symlink
+#  file:
+#    src: "{{ wildfly_home }}"
+#    dest: "{{ wildfly_prefix }}/wildfly"
+#    owner: "{{ wildfly_user }}"
+#    group: "{{ wildfly_user }}"
+#    state: link
+
+- name: create config directory
+  file:
+    path: "/etc/wildfly"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: copy config file
+  template:
+    src: wildfly.conf.j2
+    dest: "/etc/wildfly/wildfly.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart wildfly
+
+#- name: copy systemd service
+#  copy:
+#    src: "{{ wildfly_home }}/docs/contrib/scripts/systemd/wildfly.service"
+#    remote_src: yes
+#    dest: "/etc/systemd/system/wildfly.service"
+#    owner: root
+#    group: root
+#    mode: 0644
+#  notify: restart wildfly
+
+#- name: copy systemd script
+#  copy:
+#    src: "{{ wildfly_home }}/docs/contrib/scripts/systemd/launch.sh"
+#    remote_src: yes
+#    dest: "{{ wildfly_home }}/bin/launch.sh"
+#    owner: "{{ wildfly_user }}"
+#    group: "{{ wildfly_user }}"
+#    mode: 0755
+#  notify: restart wildfly
+
+- name: create var run directory
+  file:
+    path: "/var/run/wildfly"
+    owner: "{{ wildfly_user }}"
+    group: "{{ wildfly_user }}"
+    mode: 0755
+    state: directory
+
+- name: start wildfly
+  service:
+    name: "wildfly"
+    enabled: yes
+    state: started

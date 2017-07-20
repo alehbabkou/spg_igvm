@@ -1,0 +1,11 @@
+---
+drools_version: 7.0.0.Final
+drools_wb_url: https://download.jboss.org/drools/release/{{ drools_version }}/kie-drools-wb-{{ drools_version }}-wildfly10.war
+drools_server_url: http://download.jboss.org/drools/release/{{ drools_version }}/kie-server-distribution-{{ drools_version }}.zip
+tomcat_home: /var/lib/tomcat7
+files_base_path: files/workbench
+
+wildfly_dir: '{{ wildfly_install_dir }}/{{ wildfly_name }}'
+wildfly_install_dir: /opt
+wildfly_name: 'wildfly-{{ wildfly_version }}'
+wildfly_version: 10.1.0.Final

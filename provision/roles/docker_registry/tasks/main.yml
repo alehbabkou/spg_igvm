@@ -1,0 +1,8 @@
+---
+- name: Pull and run the registry container
+  docker_container:
+      name: "{{ registry_name }}"
+      image: registry
+      restart_policy: always
+      ports:
+        - "{{ registry_port }}:5000"

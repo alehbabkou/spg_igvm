@@ -1,0 +1,8 @@
+---
+# JDK version options include:
+#   - java
+#   - openjdk-8-java
+#   - openjdk-9-java
+__java_packages:
+#  - openjdk-8-java
+  - oracle-java8-installer

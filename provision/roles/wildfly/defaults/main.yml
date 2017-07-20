@@ -1,0 +1,31 @@
+---
+# These two veriables have to be updated together for every new release
+# (the latter is the SHA-1 checksum of WildFly zip archive)!
+wildfly_version: "10.1.0.Final"
+wildfly_checksum: "sha1:aeb097a203394968b9526533a120786fd966cf55"
+
+# The configuration you want to run
+wildfly_config: standalone.xml
+
+# The mode you want to run
+wildfly_mode: standalone
+
+# The address to bind to
+wildfly_bind: 172.20.30.10
+
+# Remove wildfly_basedir before install (yes|no)?
+wildfly_reinstall: no
+
+wildfly_packages:
+
+wildfly_user: droolsadmin
+
+wildfly_home: /opt/wildfly
+
+wildfly_prefix: /opt/
+
+wildfly_url: http://172.20.30.10:8080/
+
+wildfly_archive: wildfly-10.1.0.Final.zip
+
+wildfly_basename: wildfly

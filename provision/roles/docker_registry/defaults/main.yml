@@ -1,0 +1,6 @@
+---
+# defaults file
+registry_server: 172.20.30.10
+registry_version: 2
+registry_name: 'rancher_server'
+registry_port: 5000

@@ -1,0 +1,61 @@
+---
+
+- name: Download Drools Workbench distribution war
+  get_url:
+    url: '{{ drools_wb_url }}'
+    dest: /tmp
+  become: True
+
+#- name: copy libs into tomcat lib
+#  copy:
+#    src: '{{ files_base_path}}/libs/'
+#    dest: '{{ tomcat_home }}/lib'
+#  become: True
+
+#- name: create configuration files inside tomcat conf
+#  copy:
+#    src: '{{ files_base_path }}/conf/'
+#    dest: '{{ tomcat_home }}/conf'
+#  become: True
+
+#- name: define system properties for btm.root, bitronix config file, JBoss logging provider and others
+#  copy:
+#    src: '{{ files_base_path }}/bin/'
+#    dest: '{{ tomcat_home }}/bin'
+#  become: True
+
+#- name: configure JEE security part one
+#  copy:
+#    src: '{{ files_base_path }}/security_libs/'
+#    dest: '{{ tomcat_home }}/lib'
+#  become: True
+
+#- name: configure JEE security part two
+#  copy:
+#    src: '{{ files_base_path }}/security_conf/'
+#    dest: '{{ tomcat_home }}/conf'
+#  become: True
+
+#- name: Restart tomcat7 server
+#  service:
+#    name: tomcat7
+#    state: restarted
+#  become: True
+
+- name: Download Kie execution server distribution zip file
+  get_url:
+    url: '{{ drools_server_url }}'
+    dest: /tmp/kie-server.zip
+
+- name: Unzip Kie execution server distribution zip file
+  unarchive:
+    src: /tmp/kie-server.zip
+    dest: /tmp/
+    copy: no
+
+- name: Deploy a Drools Workbench application
+  jboss:
+    src: /tmp
+    deploy_path: '{{ wildfly_dir }}/standalone/deployments/kie-wb.war'
+    deployment: kie-wb.war
+    state: present

@@ -1,0 +1,12 @@
+---
+
+- name: Update apt cache
+  apt: update_cache=yes
+
+- name: Upgrade packages
+  apt: upgrade=dist
+
+- name: Install latest version of "unzip"
+  apt:
+    name: unzip
+    state: latest
